@@ -25,6 +25,7 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local HttpService = game:GetService("HttpService")
+local Stats = game:GetService("Stats")
 local LocalPlayer = Players.LocalPlayer
 
 -- ==========================================
@@ -43,31 +44,34 @@ end
 
 local DSConfig = {
 	Mobile = {
-		WindowW = 480, WindowH = 300, SidebarW = 112, HeaderH = 44,
+		WindowW = 480, WindowH = 300, SidebarW = 126, HeaderH = 38,
 		CompH = 25, CompHDesc = 36, FontTitle = 9, FontBase = 9,
 		TabFontSz = 9, TabBtnH = 24, SliderH = 38, PanelW = 140,
 		LogoSz = 28, FontBadge = 11, FontHeader = 11, NotifyW = 220,
 		NotifyH = 45, NotifyIcon = 24, NotifyFontT = 11, NotifyFontC = 10,
 		DDHeader = 26, Padding = 6, IconSz = 12, ToggleW = 28,
 		ToggleH = 14, InputH = 19, FontDesc = 9, SectionHeaderH = 22,
+		ProfAvatar = 24, ProfBtnH = 22, DDInd = 9, DDIndGap = 4,
 	},
 	Tablet = {
-		WindowW = 600, WindowH = 390, SidebarW = 155, HeaderH = 54,
+		WindowW = 600, WindowH = 390, SidebarW = 170, HeaderH = 46,
 		CompH = 32, CompHDesc = 46, FontTitle = 12, FontBase = 12,
 		TabFontSz = 11, TabBtnH = 34, SliderH = 48, PanelW = 175,
 		LogoSz = 38, FontBadge = 14, FontHeader = 14, NotifyW = 260,
 		NotifyH = 55, NotifyIcon = 28, NotifyFontT = 12, NotifyFontC = 11,
 		DDHeader = 40, Padding = 10, IconSz = 16, ToggleW = 36,
 		ToggleH = 18, InputH = 24, FontDesc = 11, SectionHeaderH = 28,
+		ProfAvatar = 32, ProfBtnH = 27, DDInd = 13, DDIndGap = 5,
 	},
 	Desktop = {
-		WindowW = 700, WindowH = 450, SidebarW = 180, HeaderH = 60,
+		WindowW = 700, WindowH = 450, SidebarW = 194, HeaderH = 52,
 		CompH = 34, CompHDesc = 50, FontTitle = 14, FontBase = 14,
 		TabFontSz = 12, TabBtnH = 38, SliderH = 52, PanelW = 200,
 		LogoSz = 42, FontBadge = 16, FontHeader = 16, NotifyW = 300,
 		NotifyH = 65, NotifyIcon = 32, NotifyFontT = 14, NotifyFontC = 12,
 		DDHeader = 50, Padding = 12, IconSz = 18, ToggleW = 40,
 		ToggleH = 20, InputH = 26, FontDesc = 12, SectionHeaderH = 32,
+		ProfAvatar = 38, ProfBtnH = 30, DDInd = 16, DDIndGap = 6,
 	},
 }
 local DS = DSConfig[DeviceType] or DSConfig.Desktop
@@ -285,55 +289,55 @@ local function MakeDraggable(handle, target)
 end
 
 --local function MakeResizable(handle, target, opts)
---	local resizing = false
---	local startInputPos, startAbsSize, startLocalSize, startLocalPos
+--      local resizing = false
+--      local startInputPos, startAbsSize, startLocalSize, startLocalPos
 
---	local function updateResize(input)
---		local scale = (opts.getScale and opts.getScale()) or 1
---		if not scale or scale <= 0 then scale = 1 end
+--      local function updateResize(input)
+--              local scale = (opts.getScale and opts.getScale()) or 1
+--              if not scale or scale <= 0 then scale = 1 end
 
---		local mouseDelta = input.Position - startInputPos
+--              local mouseDelta = input.Position - startInputPos
 
---		local minW, maxW = opts.minW, math.max(opts.minW, opts.maxW)
---		local minH, maxH = opts.minH, math.max(opts.minH, opts.maxH)
+--              local minW, maxW = opts.minW, math.max(opts.minW, opts.maxW)
+--              local minH, maxH = opts.minH, math.max(opts.minH, opts.maxH)
 
---		local desiredAbsW = math.clamp(startAbsSize.X + mouseDelta.X, minW * scale, maxW * scale)
---		local desiredAbsH = math.clamp(startAbsSize.Y + mouseDelta.Y, minH * scale, maxH * scale)
+--              local desiredAbsW = math.clamp(startAbsSize.X + mouseDelta.X, minW * scale, maxW * scale)
+--              local desiredAbsH = math.clamp(startAbsSize.Y + mouseDelta.Y, minH * scale, maxH * scale)
 
---		local newLocalW = desiredAbsW / scale
---		local newLocalH = desiredAbsH / scale
+--              local newLocalW = desiredAbsW / scale
+--              local newLocalH = desiredAbsH / scale
 
---		target.Size = UDim2.new(startLocalSize.X.Scale, newLocalW, startLocalSize.Y.Scale, newLocalH)
---		target.Position = UDim2.new(
---			startLocalPos.X.Scale, startLocalPos.X.Offset + (desiredAbsW - startAbsSize.X) / 2,
---			startLocalPos.Y.Scale, startLocalPos.Y.Offset + (desiredAbsH - startAbsSize.Y) / 2
---		)
---	end
+--              target.Size = UDim2.new(startLocalSize.X.Scale, newLocalW, startLocalSize.Y.Scale, newLocalH)
+--              target.Position = UDim2.new(
+--                      startLocalPos.X.Scale, startLocalPos.X.Offset + (desiredAbsW - startAbsSize.X) / 2,
+--                      startLocalPos.Y.Scale, startLocalPos.Y.Offset + (desiredAbsH - startAbsSize.Y) / 2
+--              )
+--      end
 
---	table.insert(Connections, handle.InputBegan:Connect(function(input)
---		if input.UserInputType == Enum.UserInputType.MouseButton1 
---			or input.UserInputType == Enum.UserInputType.Touch then
---			resizing = true
---			startInputPos = input.Position
---			startAbsSize = target.AbsoluteSize
---			startLocalSize = target.Size
---			startLocalPos = target.Position
---		end
---	end))
+--      table.insert(Connections, handle.InputBegan:Connect(function(input)
+--              if input.UserInputType == Enum.UserInputType.MouseButton1 
+--                      or input.UserInputType == Enum.UserInputType.Touch then
+--                      resizing = true
+--                      startInputPos = input.Position
+--                      startAbsSize = target.AbsoluteSize
+--                      startLocalSize = target.Size
+--                      startLocalPos = target.Position
+--              end
+--      end))
 
---	table.insert(Connections, UserInputService.InputChanged:Connect(function(input)
---		if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement 
---			or input.UserInputType == Enum.UserInputType.Touch) then
---			updateResize(input)
---		end
---	end))
+--      table.insert(Connections, UserInputService.InputChanged:Connect(function(input)
+--              if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement 
+--                      or input.UserInputType == Enum.UserInputType.Touch) then
+--                      updateResize(input)
+--              end
+--      end))
 
---	table.insert(Connections, UserInputService.InputEnded:Connect(function(input)
---		if input.UserInputType == Enum.UserInputType.MouseButton1 
---			or input.UserInputType == Enum.UserInputType.Touch then
---			resizing = false
---		end
---	end))
+--      table.insert(Connections, UserInputService.InputEnded:Connect(function(input)
+--              if input.UserInputType == Enum.UserInputType.MouseButton1 
+--                      or input.UserInputType == Enum.UserInputType.Touch then
+--                      resizing = false
+--              end
+--      end))
 --end
 
 -- ==========================================
@@ -420,7 +424,7 @@ local Themes = {
 		SidebarBg = Color3.fromRGB(20, 20, 20),
 		InputBg = Color3.fromRGB(30, 30, 30),
 		InputStroke = Color3.fromRGB(150, 150, 150),
-		Primary = Color3.fromRGB(100, 180, 255),
+		Primary = Color3.fromRGB(17, 79, 129),
 		Text = Color3.fromRGB(235, 235, 235),
 		TextDim = Color3.fromRGB(205, 205, 205),
 		ElementBackground = Color3.fromRGB(30, 30, 30),
@@ -659,36 +663,36 @@ function NextHub:CreateWindow(props)
 	-- RESIZE HANDLE
 	-- ==========================================
 	--local ResizeHandle = Create("Frame", {
-	--	Name = "ResizeHandle",
-	--	Parent = MainFrame,
-	--	AnchorPoint = Vector2.new(1, 1),
-	--	Position = UDim2.new(1, 0, 1, 0),
-	--	Size = UDim2.new(0, 20, 0, 20),
-	--	BackgroundTransparency = 1,
-	--	ZIndex = 999,
-	--	Active = true,
+	--      Name = "ResizeHandle",
+	--      Parent = MainFrame,
+	--      AnchorPoint = Vector2.new(1, 1),
+	--      Position = UDim2.new(1, 0, 1, 0),
+	--      Size = UDim2.new(0, 20, 0, 20),
+	--      BackgroundTransparency = 1,
+	--      ZIndex = 999,
+	--      Active = true,
 	--})
 	--for i = 1, 3 do
-	--	local grip = Create("Frame", {
-	--		Parent = ResizeHandle,
-	--		AnchorPoint = Vector2.new(1, 1),
-	--		Position = UDim2.new(1, -3 - (i - 1) * 4, 1, -3),
-	--		Size = UDim2.new(0, 1.4, 0, i * 4),
-	--		Rotation = 45,
-	--		BackgroundColor3 = Style.TextDim,
-	--		BackgroundTransparency = 0.15,
-	--		BorderSizePixel = 0,
-	--		ZIndex = 999,
-	--	})
-	--	RegisterTheme({ object = grip, prop = "BackgroundColor3", key = "TextDim" })
+	--      local grip = Create("Frame", {
+	--              Parent = ResizeHandle,
+	--              AnchorPoint = Vector2.new(1, 1),
+	--              Position = UDim2.new(1, -3 - (i - 1) * 4, 1, -3),
+	--              Size = UDim2.new(0, 1.4, 0, i * 4),
+	--              Rotation = 45,
+	--              BackgroundColor3 = Style.TextDim,
+	--              BackgroundTransparency = 0.15,
+	--              BorderSizePixel = 0,
+	--              ZIndex = 999,
+	--      })
+	--      RegisterTheme({ object = grip, prop = "BackgroundColor3", key = "TextDim" })
 	--end
 
 	--MakeResizable(ResizeHandle, MainFrame, {
-	--	minW = DS.WindowW * 0.65,
-	--	minH = DS.WindowH * 0.65,
-	--	maxW = math.min(DS.WindowW * 1.8, (ScreenW * 0.92) / ResponsiveScale),
-	--	maxH = math.min(DS.WindowH * 1.8, (ScreenH * 0.85) / ResponsiveScale),
-	--	getScale = function() return WindowScale.Scale end,
+	--      minW = DS.WindowW * 0.65,
+	--      minH = DS.WindowH * 0.65,
+	--      maxW = math.min(DS.WindowW * 1.8, (ScreenW * 0.92) / ResponsiveScale),
+	--      maxH = math.min(DS.WindowH * 1.8, (ScreenH * 0.85) / ResponsiveScale),
+	--      getScale = function() return WindowScale.Scale end,
 	--})
 
 	local Header = Create("Frame", {
@@ -698,9 +702,6 @@ function NextHub:CreateWindow(props)
 	})
 	MakeDraggable(Header, MainFrame)
 
-	-- Logo (left side of the header, vertically centered). No background
-	-- frame is used; the logo, title, and version sit directly on the
-	-- header so the look is clean and not a "pill" anymore.
 	Create("ImageLabel", {
 		Image = logo,
 		Size = UDim2.fromOffset(DS.LogoSz, DS.LogoSz),
@@ -710,15 +711,26 @@ function NextHub:CreateWindow(props)
 		Parent = Header,
 	})
 
-	-- Vertical text stack: title on top, version below. Positioned just to
-	-- the right of the logo (6 px logo gap + 8 px text gap), and vertically
-	-- centered against the header via AnchorPoint (0, 0.5). AutomaticSize
-	-- grows the stack to fit the title and version text widths.
-	local textStack = Create("Frame", {
-		Name = "TextStack",
+	local titleRow = Create("Frame", {
+		Name = "TitleRow",
 		Parent = Header,
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, 6 + DS.LogoSz + 8, 0.5, 0),
+		Size = UDim2.new(0, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.XY,
+		BackgroundTransparency = 1,
+	})
+	Create("UIListLayout", {
+		Parent = titleRow,
+		FillDirection = Enum.FillDirection.Horizontal,
+		SortOrder = Enum.SortOrder.LayoutOrder,
+		VerticalAlignment = Enum.VerticalAlignment.Center,
+		Padding = UDim.new(0, 14),
+	})
+
+	local textStack = Create("Frame", {
+		Name = "TextStack",
+		Parent = titleRow,
 		Size = UDim2.new(0, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.XY,
 		BackgroundTransparency = 1,
@@ -735,7 +747,7 @@ function NextHub:CreateWindow(props)
 		AutomaticSize = Enum.AutomaticSize.X,
 		BackgroundTransparency = 1,
 		FontFace = GetFont(Enum.FontWeight.Bold),
-		TextSize = DS.FontHeader,
+		TextSize = DS.FontHeader + 2,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextColor3 = Style.Text,
 		LayoutOrder = 1,
@@ -755,10 +767,90 @@ function NextHub:CreateWindow(props)
 		Parent = textStack,
 	})
 
-	-- Close and minimize buttons are kept small (22 px square, independent
-	-- of HeaderH) so they stay subtle and do not grow when the header gets
-	-- taller. AnchorPoint (1, 0.5) keeps the close button anchored 10 px from
-	-- the right edge of the header; the minimize button sits 6 px to its left.
+	local gameLabel = Create("TextLabel", {
+		Name = "GameTitle",
+		Parent = titleRow,
+		Text = gameName,
+		Size = UDim2.new(0, 0, 0, DS.FontBadge + 2),
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundTransparency = 1,
+		FontFace = GetFont(Enum.FontWeight.Bold),
+		TextSize = DS.FontBadge - 1,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Style.TextDim,
+		LayoutOrder = 3,
+	})
+	RegisterTheme({ object = gameLabel, prop = "TextColor3", key = "VersionBadge" })
+
+	-- ==========================================
+	-- FPS & PING INDICATOR
+	-- ==========================================
+	local PerfGood = Color3.fromRGB(88, 200, 120)
+	local PerfMid = Color3.fromRGB(255, 232, 25)
+	local PerfBad = Color3.fromRGB(240, 90, 90)
+
+	local fpsLabel = Create("TextLabel", {
+		Name = "FpsIndicator",
+		Parent = titleRow,
+		Text = "FPS --",
+		Size = UDim2.new(0, 0, 0, DS.FontBadge + 2),
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundTransparency = 1,
+		FontFace = GetFont(Enum.FontWeight.SemiBold),
+		TextSize = DS.FontBadge - 1,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Style.TextDim,
+		LayoutOrder = 4,
+	})
+
+	local pingLabel = Create("TextLabel", {
+		Name = "PingIndicator",
+		Parent = titleRow,
+		Text = "Ping --",
+		Size = UDim2.new(0, 0, 0, DS.FontBadge + 2),
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundTransparency = 1,
+		FontFace = GetFont(Enum.FontWeight.SemiBold),
+		TextSize = DS.FontBadge - 1,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Style.TextDim,
+		LayoutOrder = 5,
+	})
+
+	do
+		task.spawn(function()
+			while ScreenGui.Parent do
+				task.wait(0.5)
+
+				if not ScreenGui.Parent then break end
+
+				local fps = workspace:GetRealPhysicsFPS()
+				fpsLabel.Text = string.format("FPS %d", math.floor(fps + 0.5))
+				fpsLabel.TextColor3 = (fps >= 50 and PerfGood) or (fps >= 30 and PerfMid) or PerfBad
+
+				local ping = nil
+
+				local okP, p = pcall(function() return LocalPlayer:GetNetworkPing() end)
+				if okP and typeof(p) == "number" and p > 0 then
+					ping = (p < 5) and (p * 1000) or p
+				else
+					local okD, d = pcall(function()
+						return Stats.Network.ServerStatsItem["Data Ping"]:GetValue()
+					end)
+					if okD and typeof(d) == "number" then ping = d end
+				end
+
+				if ping then
+					pingLabel.Text = string.format("Ping %dms", math.floor(ping + 0.5))
+					pingLabel.TextColor3 = (ping <= 80 and PerfGood) or (ping <= 150 and PerfMid) or PerfBad
+				else
+					pingLabel.Text = "Ping --"
+					pingLabel.TextColor3 = Style.TextDim
+				end
+			end
+		end)
+	end
+
 	local btnSz = 22
 	local closeBtn = Create("ImageButton", {
 		AnchorPoint = Vector2.new(1, 0.5),
@@ -786,6 +878,26 @@ function NextHub:CreateWindow(props)
 		Parent = Header,
 	})
 
+	task.spawn(function()
+		task.wait()
+		if not gameLabel.Parent then return end
+
+		local scale = WindowScale.Scale
+		local rowStart = 6 + DS.LogoSz + 8
+		local btnZone = 10 + btnSz + 6 + btnSz + 10
+		local availW = DS.WindowW - rowStart - btnZone
+		local rowW = titleRow.AbsoluteSize.X / scale
+
+		if rowW > availW then
+			local maxGameW = (gameLabel.AbsoluteSize.X / scale) - (rowW - availW)
+			if maxGameW > 12 then
+				gameLabel.AutomaticSize = Enum.AutomaticSize.None
+				gameLabel.Size = UDim2.new(0, maxGameW, 0, DS.FontBadge + 2)
+				gameLabel.TextTruncate = Enum.TextTruncate.AtEnd
+			end
+		end
+	end)
+
 	local IsMinimized = false
 
 	local toggleBtn = Create("ImageButton", {
@@ -794,7 +906,7 @@ function NextHub:CreateWindow(props)
 		BackgroundColor3 = Style.DarkBg, 
 		BorderSizePixel = 0,
 		Position = UDim2.new(0.1, 0, 0.2, 0),
-		Size = UDim2.new(0, DS.HeaderH, 0, DS.HeaderH),
+		Size = UDim2.new(0, DS.HeaderH -6, 0, DS.HeaderH -6),
 		Image = "rbxassetid://111607497408853",
 		ImageColor3 = Style.Text, 
 		Visible = true,
@@ -805,7 +917,13 @@ function NextHub:CreateWindow(props)
 	})
 	MakeDraggable(toggleBtn, toggleBtn)
 	Create("UICorner", { CornerRadius = UDim.new(0, 5), Parent = toggleBtn })
-	Create("UIStroke", { Color = Style.InputStroke, Thickness = 1, Parent = toggleBtn })
+
+	local toggleStroke = Create("UIStroke", { 
+		Color = Style.Primary, 
+		Thickness = 1.3, 
+		Parent = toggleBtn 
+	})
+	RegisterTheme({ object = toggleStroke, prop = "Color", key = "Primary"})
 
 	local function ToggleUI()
 		IsMinimized = not IsMinimized
@@ -888,7 +1006,7 @@ function NextHub:CreateWindow(props)
 			Parent = dialog, BackgroundTransparency = 1,
 			Size = UDim2.new(1, 0, 0, DS.FontHeader + 6),
 			FontFace = GetFont(Enum.FontWeight.Bold),
-			Text = "Tutup NextHub?",
+			Text = "Close NextHub?",
 			TextColor3 = Style.Text, TextSize = DS.FontHeader,
 			LayoutOrder = 1,
 		})
@@ -899,7 +1017,7 @@ function NextHub:CreateWindow(props)
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			FontFace = GetFont(Enum.FontWeight.Regular),
-			Text = "UI akan tertutup dan harus dibuka ulang untuk memunculkannya kembali.",
+			Text = "The script will close, and you'll need to execute again to bring it back up.",
 			TextColor3 = Style.TextDim, TextSize = DS.FontDesc,
 			TextWrapped = true, LayoutOrder = 2,
 		})
@@ -921,8 +1039,8 @@ function NextHub:CreateWindow(props)
 			Size = UDim2.new(0.5, -DS.Padding / 2, 1, 0),
 			BackgroundColor3 = Style.ElementBackground,
 			AutoButtonColor = false,
-			Text = "Batal",
-			FontFace = GetFont(Enum.FontWeight.SemiBold),
+			Text = "Cancel",
+			FontFace = GetFont(Enum.FontWeight.Bold),
 			TextColor3 = Style.Text, TextSize = DS.FontBase,
 		})
 		Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = cancelBtn })
@@ -934,8 +1052,8 @@ function NextHub:CreateWindow(props)
 			Size = UDim2.new(0.5, -DS.Padding / 2, 1, 0),
 			BackgroundColor3 = Style.Primary,
 			AutoButtonColor = false,
-			Text = "Tutup",
-			FontFace = GetFont(Enum.FontWeight.SemiBold),
+			Text = "Close",
+			FontFace = GetFont(Enum.FontWeight.Bold),
 			TextColor3 = Color3.fromRGB(235, 235, 235), TextSize = DS.FontBase,
 		})
 		Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = confirmBtn })
@@ -958,23 +1076,217 @@ function NextHub:CreateWindow(props)
 	toggleBtn.Activated:Connect(ToggleUI)
 	minimizeBtn.Activated:Connect(ToggleUI)
 
-	-- Sidebar: opaque background, starts at Y = HeaderH (no gap), and sits
-	-- at a high ZIndex so the entire sidebar stack (TabContainer + tab
-	-- buttons + IndicatorLayer + tab indicator) renders on top of any
-	-- other MainFrame children. This prevents any sibling (e.g. the
-	-- ContentContainer or future overlays) from drawing over the sidebar
-	-- and producing stray visual artifacts around the active tab.
+	-- ==========================================
+	-- PROFILE CARD (below sidebar)
+	-- ==========================================
+	local profPadV = math.max(4, DS.Padding - 2)
+	local profNameH = DS.FontBase + 4
+	local profStatusH = DS.FontDesc + 2
+	local chevSz = DS.IconSz
+	local profAvatarSz = DS.ProfAvatar
+	local profCardH = profAvatarSz + profPadV * 2
+
 	local Sidebar = Create("Frame", {
-		Name = "Sidebar", 
+		Name = "Sidebar",
 		Parent = MainFrame,
-		BackgroundColor3 = Style.SidebarBg, 
+		BackgroundColor3 = Style.SidebarBg,
 		BackgroundTransparency = 0,
 		BorderSizePixel = 0,
 		Position = UDim2.new(0, 0, 0, DS.HeaderH),
-		Size = UDim2.new(0, DS.SidebarW, 1, -DS.HeaderH),
+		Size = UDim2.new(0, DS.SidebarW, 1, -(DS.HeaderH + profCardH + 12)),
 		ZIndex = 50,
 	})
 	RegisterTheme({ object = Sidebar, prop = "BackgroundColor3", key = "SidebarBg" })
+
+	local profileCard = Create("Frame", {
+		Name = "ProfileCard",
+		Parent = MainFrame,
+		BackgroundColor3 = Style.ElementBackground,
+		BackgroundTransparency = 0.25,
+		BorderSizePixel = 0,
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 6, 1, -6),
+		Size = UDim2.new(0, DS.SidebarW - 12, 0, profCardH),
+		ZIndex = 50,
+	})
+	Create("UICorner", { CornerRadius = UDim.new(0, 8), Parent = profileCard })
+	local profStroke = Create("UIStroke", { Color = Style.Outline, Thickness = 1, Transparency = 0.35, Parent = profileCard })
+	RegisterTheme({ object = profileCard, prop = "BackgroundColor3", key = "ElementBackground" })
+	RegisterTheme({ object = profStroke, prop = "Color", key = "Outline" })
+
+	local avatar = Create("ImageLabel", {
+		Name = "Avatar",
+		Parent = profileCard,
+		BackgroundColor3 = Style.InputBg,
+		BackgroundTransparency = 0.4,
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, profPadV, 0.5, 0),
+		Size = UDim2.new(0, profAvatarSz, 0, profAvatarSz),
+		Image = "rbxthumb://type=AvatarHeadShot&id=" .. LocalPlayer.UserId .. "&w=100&h=100",
+		ZIndex = 51,
+	})
+	Create("UICorner", { CornerRadius = UDim.new(1, 0), Parent = avatar })
+	Create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1, Transparency = 0.15, Parent = avatar })
+	RegisterTheme({ object = avatar, prop = "BackgroundColor3", key = "InputBg" })
+
+	local profTextX = profPadV + profAvatarSz + profPadV
+
+	local userLabel = Create("TextLabel", {
+		Name = "Username",
+		Parent = profileCard,
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, profTextX, 0, (profCardH - profNameH - profStatusH) / 2),
+		Size = UDim2.new(1, -(profTextX + chevSz + profPadV + 6), 0, profNameH),
+		FontFace = GetFont(Enum.FontWeight.Bold),
+		Text = LocalPlayer.Name,
+		TextColor3 = Style.Text,
+		TextSize = DS.FontBase,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		ZIndex = 51,
+	})
+	RegisterTheme({ object = userLabel, prop = "TextColor3", key = "Text" })
+
+	local isPremium = tostring(Mode):lower() == "premium"
+
+	local statusLabel = Create("TextLabel", {
+		Name = "Membership",
+		Parent = profileCard,
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, profTextX, 0, (profCardH - profNameH - profStatusH) / 2 + profNameH),
+		Size = UDim2.new(1, -(profTextX + chevSz + profPadV + 6), 0, profStatusH),
+		FontFace = GetFont(Enum.FontWeight.Medium),
+		Text = tostring(Mode),
+		TextColor3 = isPremium and Style.VersionBadge or Style.TextDim,
+		TextSize = DS.FontDesc - 1,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 51,
+	})
+	RegisterTheme({ object = statusLabel, prop = "TextColor3", key = isPremium and "VersionBadge" or "TextDim" })
+
+	local profileChevron = Create("ImageLabel", {
+		Name = "ProfileChevron",
+		Parent = profileCard,
+		BackgroundTransparency = 1,
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -profPadV, 0.5, 0),
+		Size = UDim2.new(0, chevSz, 0, chevSz),
+		Image = GetIcon("chevron-down"),
+		ImageColor3 = Style.TextDim,
+		Rotation = 180,
+		ZIndex = 51,
+	})
+	RegisterTheme({ object = profileChevron, prop = "ImageColor3", key = "TextDim" })
+
+	local cardBtn = Create("TextButton", {
+		Name = "CardClick",
+		Parent = profileCard,
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 1, 0),
+		Text = "",
+		Active = true,
+		ZIndex = 52,
+	})
+
+	local profBtnH = DS.ProfBtnH
+	local toggleClip = Create("Frame", {
+		Name = "ProfileToggleClip",
+		Parent = MainFrame,
+		BackgroundTransparency = 1,
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 6, 1, -(6 + profCardH + 6)),
+		Size = UDim2.new(0, DS.SidebarW - 12, 0, profBtnH),
+		ClipsDescendants = true,
+		Visible = false,
+		ZIndex = 60,
+	})
+
+	local profileToggle = Create("TextButton", {
+		Name = "ProfileToggle",
+		Parent = toggleClip,
+		BackgroundColor3 = Style.ElementBackground,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0, 0, 1, 0),
+		Size = UDim2.new(1, 0, 1, 0),
+		FontFace = GetFont(Enum.FontWeight.SemiBold),
+		Text = "Hide Profile",
+		TextColor3 = Style.Text,
+		TextSize = DS.FontBase - 1,
+		AutoButtonColor = false,
+		Active = true,
+		ZIndex = 61,
+	})
+	Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = profileToggle })
+	local toggleStroke = Create("UIStroke", { Color = Style.Outline, Thickness = 1, Transparency = 0.35, Parent = profileToggle })
+	RegisterTheme({ object = profileToggle, prop = "BackgroundColor3", key = "ElementBackground" })
+	RegisterTheme({ object = profileToggle, prop = "TextColor3", key = "Text" })
+	RegisterTheme({ object = toggleStroke, prop = "Color", key = "Outline" })
+
+	local profTween = TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+	local toggleOpen = false
+
+	local function SetToggleOpen(open)
+		toggleOpen = open
+
+		if open then
+			toggleClip.Visible = true
+			profileToggle.Position = UDim2.new(0, 0, 1, 0)
+			TweenService:Create(profileToggle, profTween, { Position = UDim2.new(0, 0, 0, 0) }):Play()
+			TweenService:Create(profileChevron, profTween, { Rotation = 0 }):Play()
+		else
+			TweenService:Create(profileChevron, profTween, { Rotation = 180 }):Play()
+
+			local tw = TweenService:Create(profileToggle, profTween, { Position = UDim2.new(0, 0, 1, 0) })
+			tw:Play()
+			tw.Completed:Connect(function()
+				if not toggleOpen then toggleClip.Visible = false end
+			end)
+		end
+	end
+
+	local RealAvatar = "rbxthumb://type=AvatarHeadShot&id=" .. LocalPlayer.UserId .. "&w=100&h=100"
+	local AnonAvatar = "rbxthumb://type=AvatarHeadShot&id=156&w=150&h=150"
+	local RealName = LocalPlayer.Name
+	local profileAnonymous = false
+	local swapping = false
+
+	local function SetAnonymous(anon)
+		profileAnonymous = anon
+		profileToggle.Text = anon and "Show Profile" or "Hide Profile"
+
+		local fadeOut = TweenInfo.new(0.15, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+		local twA = TweenService:Create(avatar, fadeOut, { ImageTransparency = 1 })
+		local twN = TweenService:Create(userLabel, fadeOut, { TextTransparency = 1 })
+		twA:Play()
+		twN:Play()
+		twA.Completed:Wait()
+
+		if anon then
+			avatar.Image = AnonAvatar
+			avatar.ImageColor3 = Color3.new(1, 1, 1)
+			userLabel.Text = "Anonymous"
+		else
+			avatar.Image = RealAvatar
+			avatar.ImageColor3 = Color3.new(1, 1, 1)
+			userLabel.Text = RealName
+		end
+
+		local fadeIn = TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+		TweenService:Create(avatar, fadeIn, { ImageTransparency = 0 }):Play()
+		TweenService:Create(userLabel, fadeIn, { TextTransparency = 0 }):Play()
+	end
+
+	cardBtn.Activated:Connect(function()
+		SetToggleOpen(not toggleOpen)
+	end)
+
+	profileToggle.Activated:Connect(function()
+		if swapping then return end
+		swapping = true
+		SetAnonymous(not profileAnonymous)
+		swapping = false
+	end)
 
 	local TabContainer = Create("ScrollingFrame", {
 		Name = "TabContainer", 
@@ -1013,21 +1325,14 @@ function NextHub:CreateWindow(props)
 		Active = false,
 		ClipsDescendants = true,
 	})
-	-- Tab indicator: visual size matches the tab button exactly. The
-	-- border design is preserved by using a UIStroke, but with
-	-- ApplyStrokeMode = Contextual — the stroke is drawn INSIDE the frame
-	-- so it does not extend the indicator's visible boundary beyond its
-	-- frame size (which previously made the indicator ~1.2 px larger than
-	-- the button on every side and showed up as a "ketiban" strip).
-	-- Initial size/position match the first tab button; ActivateTab()
-	-- later overrides them with the active button's exact bounds.
+
 	local tabIndicator = Create("Frame", {
 		Name = "TabIndicator",
 		Parent = IndicatorLayer,
 		BackgroundColor3 = Style.Primary,
 		BackgroundTransparency = 0.75,
 		Size = UDim2.new(1, -14, 0, DS.TabBtnH),
-		Position = UDim2.new(0, 7, 0, 0),
+		Position = UDim2.new(0, 7, 0, 2),
 		ZIndex = 60,
 		Active = false,
 		Visible = false,
@@ -1053,6 +1358,7 @@ function NextHub:CreateWindow(props)
 		ClipsDescendants = true,
 	})
 	Create("UICorner", { CornerRadius = UDim.new(0, 5), Parent = ContentContainer })
+	RegisterTheme({ object = ContentContainer, prop = "BackgroundColor3", key = "DarkBg"})
 
 	local Window = {
 		Tabs = {},
@@ -1090,10 +1396,6 @@ function NextHub:CreateWindow(props)
 		local content = opts.Content or "Message"
 		local duration = opts.Duration or 3
 
-		-- Wrapper frame participates in the UIListLayout (its Position is controlled
-		-- by the layout). The inner content frame is animated independently so
-		-- UIListLayout cannot fight the slide tween, keeping the motion as smooth
-		-- as the rest of the UI (Quint easing, consistent with dropdown/tab anims).
 		local wrapper = Create("Frame", {
 			Name = "NotifyWrapper",
 			Parent = NotifHolder,
@@ -1108,7 +1410,6 @@ function NextHub:CreateWindow(props)
 			BackgroundColor3 = Style.DarkBg,
 			BackgroundTransparency = 0,
 			Size = UDim2.fromOffset(DS.NotifyW, DS.NotifyH),
-			-- Start off-screen to the right so it can slide in right -> left.
 			Position = UDim2.new(0, DS.NotifyW + 50, 0, 0),
 			ClipsDescendants = true,
 		})
@@ -1166,11 +1467,6 @@ function NextHub:CreateWindow(props)
 			LayoutOrder = 2,
 		})
 
-		-- Timer indicator: inset clip container keeps the bar inside the rounded
-		-- corners (6 px in on each side, 1 px above the very bottom edge) so the
-		-- bar no longer pokes out of the notify as a thin line over the corner
-		-- curve. The bar fills the container and is shrunk horizontally by the
-		-- tween; ClipsDescendants guarantees it never overflows.
 		local barClip = Create("Frame", {
 			Parent = frame,
 			BackgroundTransparency = 1,
@@ -1187,13 +1483,10 @@ function NextHub:CreateWindow(props)
 			Size = UDim2.new(1, 0, 1, 0),
 		})
 
-		-- Slide in: right -> left, smooth Quint Out (matches the rest of the UI).
 		TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), { Position = UDim2.new(0, 0, 0, 0) }):Play()
-		-- Timer bar drains linearly across the full notify lifetime.
 		TweenService:Create(bar, TweenInfo.new(duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 1, 0) }):Play()
 
 		task.delay(duration, function()
-			-- Slide out: left -> right, smooth Quint In.
 			local tw = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
 				Position = UDim2.new(0, DS.NotifyW + 50, 0, 0),
 			})
@@ -1292,11 +1585,6 @@ function NextHub:CreateWindow(props)
 	function Window:ApplyTheme(themeName)
 		ApplyTheme(themeName)
 
-		-- Tab buttons stay transparent on every theme change. Only the active
-		-- tab indicator (already registered to Primary in the construction
-		-- code above) is tweened by ApplyTheme via the theme registry, so it is
-		-- the only element that visually changes color when the theme changes.
-
 		self:Notify({ Title = "Theme Applied", Content = "Theme " .. themeName .. " activated" })
 	end
 
@@ -1326,6 +1614,15 @@ function NextHub:CreateWindow(props)
 	Create("UICorner", { CornerRadius = UDim.new(0, 10), Parent = DropPanel })
 	RegisterTheme({ object = DropPanel, prop = "BackgroundColor3", key = "SidebarBg" })
 
+	local DropPanelStroke = Create("UIStroke", {
+		Parent = DropPanel,
+		Color = Style.Primary,
+		Thickness = 1,
+		Transparency = 0.35,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+	})
+	RegisterTheme({ object = DropPanelStroke, prop = "Color", key = "Primary" })
+
 	local PanelHeader = Create("Frame", {
 		Parent = DropPanel, 
 		BackgroundColor3 = Style.DarkBg,
@@ -1349,12 +1646,14 @@ function NextHub:CreateWindow(props)
 	})
 	RegisterTheme({ object = PanelTitle, prop = "TextColor3", key = "Primary" })
 
+	local PanelCloseSz = DS.IconSz + 2
 	local PanelCloseBtn = Create("ImageButton", {
-		Parent = PanelHeader, 
+		Parent = PanelHeader,
 		BackgroundTransparency = 1,
-		Position = UDim2.new(1, -30, 0.5, -10), 
-		Size = UDim2.new(0, 20, 0, 20),
-		Image = GetIcon("x"), 
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -DS.Padding, 0.5, 0),
+		Size = UDim2.new(0, PanelCloseSz, 0, PanelCloseSz),
+		Image = GetIcon("x"),
 		ImageColor3 = Style.TextDim, ZIndex = 51,
 	})
 	RegisterTheme({ object = PanelCloseBtn, prop = "ImageColor3", key = "TextDim" })
@@ -1416,6 +1715,11 @@ function NextHub:CreateWindow(props)
 	local CurrentPanelCallback = nil
 	local PanelIsMulti = false
 	local PanelMultiSelected = {}
+	local SelectTweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+	local DDIndicatorW = DS.DDInd
+	local DDIndicatorGap = DS.DDIndGap
+	local DDCheckSz = math.max(5, DDIndicatorW - 4)
 
 	local function CloseDropPanel()
 		if not IsPanelOpen then return end
@@ -1465,7 +1769,9 @@ function NextHub:CreateWindow(props)
 	end)
 
 	MultiApplyBtn.Activated:Connect(function()
-		if CurrentPanelCallback then CurrentPanelCallback(PanelMultiSelected) end
+		if PanelIsMulti and CurrentPanelCallback then
+			CurrentPanelCallback(PanelMultiSelected)
+		end
 		CloseDropPanel()
 	end)
 
@@ -1481,8 +1787,8 @@ function NextHub:CreateWindow(props)
 
 	function Window:OpenRightDropdown(ddTitle, items, default, callback, searchEnabled)
 		for _, child in pairs(PanelList:GetChildren()) do
-			if child:IsA("TextButton") or child:IsA("Frame") then 
-				child:Destroy() 
+			if child:IsA("TextButton") or child:IsA("Frame") then
+				child:Destroy()
 			end
 		end
 
@@ -1496,38 +1802,118 @@ function NextHub:CreateWindow(props)
 		local listTop = searchEnabled and (DS.DDHeader + DS.InputH + DS.Padding * 2) or DS.DDHeader
 
 		PanelList.Position = UDim2.new(0, 0, 0, listTop)
-		PanelList.Size = UDim2.new(1, 0, 1, -listTop)
+		PanelList.Size = UDim2.new(1, 0, 1, -(listTop + 14))
+
+		local IndicatorW = DDIndicatorW
+		local IndicatorGap = DDIndicatorGap
+		local labelRestX = DS.Padding
+		local labelSelX = DS.Padding + IndicatorW + IndicatorGap
+
+		local currentSingle = default
+		local rows = {}
+
+		local function SetRowSelected(data, selected, animate)
+			local tw = animate and SelectTweenInfo or TweenInfo.new(0)
+			TweenService:Create(data.Row, tw, {
+				BackgroundColor3 = selected and Style.Primary or Style.ElementBackground,
+				BackgroundTransparency = selected and 0.2 or 0.5,
+			}):Play()
+			TweenService:Create(data.Label, tw, {
+				Position = UDim2.new(0, selected and labelSelX or labelRestX, 0, 0),
+			}):Play()
+			TweenService:Create(data.Indicator, tw, {
+				BackgroundTransparency = selected and 0 or 1,
+				Size = selected and UDim2.new(0, IndicatorW, 0, IndicatorW) or UDim2.new(0, 0, 0, IndicatorW),
+			}):Play()
+			TweenService:Create(data.Check, tw, {
+				ImageTransparency = selected and 0 or 1,
+			}):Play()
+		end
 
 		for _, item in pairs(items) do
 			local selected = (item == default)
 
-			local btn = Create("TextButton", {
+			local row = Create("Frame", {
+				Name = item,
 				Parent = PanelList,
 				BackgroundColor3 = selected and Style.Primary or Style.ElementBackground,
 				BackgroundTransparency = selected and 0.2 or 0.5,
 				Size = UDim2.new(1, 0, 0, DS.TabBtnH - 8),
-				FontFace = GetFont(Enum.FontWeight.Medium), Text = "  " .. item,
-				TextColor3 = Style.Text, TextSize = DS.FontBase - 1,
+				ZIndex = 52,
+			})
+			Create("UICorner", { CornerRadius = UDim.new(0, 4), Parent = row })
+
+			local indicator = Create("Frame", {
+				Name = "SelectedIndicator",
+				Parent = row,
+				BackgroundColor3 = Style.Primary,
+				AnchorPoint = Vector2.new(0, 0.5),
+				Position = UDim2.new(0, DS.Padding, 0.5, 0),
+				Size = selected and UDim2.new(0, IndicatorW, 0, IndicatorW) or UDim2.new(0, 0, 0, IndicatorW),
+				BackgroundTransparency = selected and 0 or 1,
+				ClipsDescendants = true,
+				ZIndex = 53,
+			})
+			Create("UICorner", { CornerRadius = UDim.new(0, 4), Parent = indicator })
+			RegisterTheme({ object = indicator, prop = "BackgroundColor3", key = "Primary" })
+
+			local check = Create("ImageLabel", {
+				Name = "CheckIcon",
+				Parent = indicator,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(0, DDCheckSz, 0, DDCheckSz),
+				Position = UDim2.new(0, IndicatorW / 2, 0.5, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Image = GetIcon("check"),
+				ImageColor3 = Style.Text,
+				ImageTransparency = selected and 0 or 1,
+				ZIndex = 54,
+			})
+
+			local lbl = Create("TextLabel", {
+				Name = "ItemLabel",
+				Parent = row,
+				BackgroundTransparency = 1,
+				Position = UDim2.new(0, selected and labelSelX or labelRestX, 0, 0),
+				Size = UDim2.new(1, -(labelSelX + DS.Padding), 1, 0),
+				FontFace = GetFont(Enum.FontWeight.Medium),
+				Text = item,
+				TextColor3 = Style.Text,
+				TextSize = DS.FontBase - 1,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTruncate = Enum.TextTruncate.AtEnd,
-				AutoButtonColor = false, ZIndex = 52,
+				ZIndex = 53,
 			})
-			Create("UICorner", { CornerRadius = UDim.new(0, 4), Parent = btn })
 
-			btn.Activated:Connect(function()
+			local rowBtn = Create("TextButton", {
+				Parent = row,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, 0, 1, 0),
+				Text = "",
+				ZIndex = 55,
+				Active = true,
+			})
+
+			local data = { Row = row, Label = lbl, Indicator = indicator, Check = check }
+			rows[item] = data
+
+			rowBtn.Activated:Connect(function()
+				if currentSingle == item then return end
+				if rows[currentSingle] then SetRowSelected(rows[currentSingle], false, true) end
+				currentSingle = item
+				SetRowSelected(data, true, true)
 				if CurrentPanelCallback then CurrentPanelCallback({ item }) end
-				CloseDropPanel()
 			end)
 
-			btn.MouseEnter:Connect(function()
-				if not selected then 
-					TweenService:Create(btn, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { BackgroundColor3 = Style.Hover }):Play() 
+			row.MouseEnter:Connect(function()
+				if currentSingle ~= item then
+					TweenService:Create(row, SelectTweenInfo, { BackgroundColor3 = Style.Hover }):Play()
 				end
 			end)
 
-			btn.MouseLeave:Connect(function()
-				if not selected then 
-					TweenService:Create(btn, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { BackgroundColor3 = Style.ElementBackground }):Play() 
+			row.MouseLeave:Connect(function()
+				if currentSingle ~= item then
+					TweenService:Create(row, SelectTweenInfo, { BackgroundColor3 = Style.ElementBackground }):Play()
 				end
 			end)
 		end
@@ -1536,8 +1922,8 @@ function NextHub:CreateWindow(props)
 
 	function Window:OpenRightDropdownMulti(ddTitle, items, currentSel, callback, searchEnabled)
 		for _, child in pairs(PanelList:GetChildren()) do
-			if child:IsA("TextButton") or child:IsA("Frame") then 
-				child:Destroy() 
+			if child:IsA("TextButton") or child:IsA("Frame") then
+				child:Destroy()
 			end
 		end
 
@@ -1558,21 +1944,41 @@ function NextHub:CreateWindow(props)
 		PanelList.Position = UDim2.new(0, 0, 0, listTop)
 		PanelList.Size = UDim2.new(1, 0, 1, -(listTop + 40))
 
+		local IndicatorW = DDIndicatorW
+		local IndicatorGap = DDIndicatorGap
+		local labelRestX = DS.Padding
+		local labelSelX = DS.Padding + IndicatorW + IndicatorGap
+
 		local function RefreshRows()
 			for _, row in pairs(PanelList:GetChildren()) do
 				if row:IsA("Frame") then
 					local checked = table.find(PanelMultiSelected, row.Name) ~= nil
 
-					local cb = row:FindFirstChild("CheckBox")
-					local cm = row:FindFirstChild("CheckMark")
+					local indicator = row:FindFirstChild("SelectedIndicator")
+					local check = indicator and indicator:FindFirstChild("CheckIcon")
+					local lbl = row:FindFirstChild("ItemLabel")
 
-					if cb then 
-						TweenService:Create(cb, TweenInfo.new(0.15), { 
-							BackgroundColor3 = checked and Style.CheckboxOn or Style.CheckboxOff 
-						}):Play() 
+					TweenService:Create(row, SelectTweenInfo, {
+						BackgroundColor3 = checked and Style.Primary or Style.ElementBackground,
+						BackgroundTransparency = checked and 0.2 or 0.5,
+					}):Play()
+
+					if indicator then
+						TweenService:Create(indicator, SelectTweenInfo, {
+							BackgroundTransparency = checked and 0 or 1,
+							Size = checked and UDim2.new(0, IndicatorW, 0, IndicatorW) or UDim2.new(0, 0, 0, IndicatorW),
+						}):Play()
 					end
 
-					if cm then cm.Visible = checked end
+					if check then
+						TweenService:Create(check, SelectTweenInfo, { ImageTransparency = checked and 0 or 1 }):Play()
+					end
+
+					if lbl then
+						TweenService:Create(lbl, SelectTweenInfo, {
+							Position = UDim2.new(0, checked and labelSelX or labelRestX, 0, 0),
+						}):Play()
+					end
 				end
 			end
 		end
@@ -1581,56 +1987,63 @@ function NextHub:CreateWindow(props)
 			local checked = table.find(PanelMultiSelected, item) ~= nil
 
 			local row = Create("Frame", {
-				Name = item, 
+				Name = item,
 				Parent = PanelList,
-				BackgroundColor3 = Style.ElementBackground, 
-				BackgroundTransparency = 0.5,
-				Size = UDim2.new(1, 0, 0, DS.TabBtnH - 6), 
+				BackgroundColor3 = checked and Style.Primary or Style.ElementBackground,
+				BackgroundTransparency = checked and 0.2 or 0.5,
+				Size = UDim2.new(1, 0, 0, DS.TabBtnH - 8),
 				ZIndex = 52,
 			})
 			Create("UICorner", { CornerRadius = UDim.new(0, 4), Parent = row })
 
-			local cb = Create("Frame", {
-				Name = "CheckBox", 
+			local indicator = Create("Frame", {
+				Name = "SelectedIndicator",
 				Parent = row,
-				BackgroundColor3 = checked and Style.CheckboxOn or Style.CheckboxOff,
-				Position = UDim2.new(1, -30, 0.5, -9), 
-				Size = UDim2.new(0, 18, 0, 18), 
+				BackgroundColor3 = Style.Primary,
+				AnchorPoint = Vector2.new(0, 0.5),
+				Position = UDim2.new(0, DS.Padding, 0.5, 0),
+				Size = checked and UDim2.new(0, IndicatorW, 0, IndicatorW) or UDim2.new(0, 0, 0, IndicatorW),
+				BackgroundTransparency = checked and 0 or 1,
+				ClipsDescendants = true,
 				ZIndex = 53,
 			})
-			Create("UICorner", { CornerRadius = UDim.new(0, 4), Parent = cb })
+			Create("UICorner", { CornerRadius = UDim.new(0, 4), Parent = indicator })
+			RegisterTheme({ object = indicator, prop = "BackgroundColor3", key = "Primary" })
 
 			Create("ImageLabel", {
-				Name = "CheckMark", Parent = cb, 
+				Name = "CheckIcon",
+				Parent = indicator,
 				BackgroundTransparency = 1,
-				Size = UDim2.new(1, -2, 1, -2), 
-				Position = UDim2.new(0, 1, 0, 1),
-				Image = GetIcon("check"), 
-				ImageColor3 = Style.Text, 
-				ZIndex = 54, 
-				Visible = checked,
+				Size = UDim2.new(0, DDCheckSz, 0, DDCheckSz),
+				Position = UDim2.new(0, IndicatorW / 2, 0.5, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Image = GetIcon("check"),
+				ImageColor3 = Style.Text,
+				ImageTransparency = checked and 0 or 1,
+				ZIndex = 54,
 			})
 
-			Create("TextLabel", {
-				Parent = row, 
+			local lbl = Create("TextLabel", {
+				Name = "ItemLabel",
+				Parent = row,
 				BackgroundTransparency = 1,
-				Position = UDim2.new(0, 10, 0, 0), 
-				Size = UDim2.new(1, -44, 1, 0),
-				FontFace = GetFont(Enum.FontWeight.Medium), 
+				Position = UDim2.new(0, checked and labelSelX or labelRestX, 0, 0),
+				Size = UDim2.new(1, -(labelSelX + DS.Padding), 1, 0),
+				FontFace = GetFont(Enum.FontWeight.Medium),
 				Text = item,
-				TextColor3 = Style.Text, 
+				TextColor3 = Style.Text,
 				TextSize = DS.FontBase - 1,
 				TextXAlignment = Enum.TextXAlignment.Left,
-				TextTruncate = Enum.TextTruncate.AtEnd, 
+				TextTruncate = Enum.TextTruncate.AtEnd,
 				ZIndex = 53,
 			})
 
 			local rowBtn = Create("TextButton", {
-				Parent = row, 
+				Parent = row,
 				BackgroundTransparency = 1,
-				Size = UDim2.new(1, 0, 1, 0), 
-				Text = "", 
-				ZIndex = 55, 
+				Size = UDim2.new(1, 0, 1, 0),
+				Text = "",
+				ZIndex = 55,
 				Active = true,
 			})
 
@@ -1640,12 +2053,16 @@ function NextHub:CreateWindow(props)
 				RefreshRows()
 			end)
 
-			row.MouseEnter:Connect(function() 
-				TweenService:Create(row, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { BackgroundColor3 = Style.Hover }):Play() 
+			row.MouseEnter:Connect(function()
+				if not table.find(PanelMultiSelected, item) then
+					TweenService:Create(row, SelectTweenInfo, { BackgroundColor3 = Style.Hover }):Play()
+				end
 			end)
 
-			row.MouseLeave:Connect(function() 
-				TweenService:Create(row, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { BackgroundColor3 = Style.ElementBackground }):Play() 
+			row.MouseLeave:Connect(function()
+				if not table.find(PanelMultiSelected, item) then
+					TweenService:Create(row, SelectTweenInfo, { BackgroundColor3 = Style.ElementBackground }):Play()
+				end
 			end)
 		end
 
@@ -1726,7 +2143,7 @@ function NextHub:CreateWindow(props)
 		Create("UIListLayout", { Parent = tabContent, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8) })
 		Create("UIPadding", {
 			PaddingTop = UDim.new(0, 2),
-			PaddingLeft = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 4),
 			PaddingRight = UDim.new(0, 12),
 			PaddingBottom = UDim.new(0, 4),
 			Parent = tabContent,
@@ -1764,11 +2181,11 @@ function NextHub:CreateWindow(props)
 				tabIndicator.Visible = true
 				if Window.__indicatorInitialized then
 					TweenService:Create(tabIndicator, TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-						Position = UDim2.fromOffset(relX, relY),
+						Position = UDim2.fromOffset(relX, relY + 2),
 						Size = UDim2.fromOffset(relW, relH),
 					}):Play()
 				else
-					tabIndicator.Position = UDim2.fromOffset(relX, relY)
+					tabIndicator.Position = UDim2.fromOffset(relX, relY + 2)
 					tabIndicator.Size = UDim2.fromOffset(relW, relH)
 					Window.__indicatorInitialized = true
 				end
@@ -1805,13 +2222,10 @@ function NextHub:CreateWindow(props)
 				Parent = outer,
 			})
 			RegisterTheme({ object = outerStroke, prop = "Color", key = "Primary" })
-			-- Section body now uses the theme's Primary color, so the gradient
-			-- (Transparency 0.82 -> 1, Rotation 270) fades from Primary to
-			-- transparent and updates smoothly when the theme changes.
 			RegisterTheme({ object = outer, prop = "BackgroundColor3", key = "Primary" })
 			Create("UIGradient", {
 				Transparency = NumberSequence.new({
-					NumberSequenceKeypoint.new(0, 0.82),
+					NumberSequenceKeypoint.new(0, 0.85),
 					NumberSequenceKeypoint.new(1, 1),
 				}),
 				Rotation = 270,
@@ -1820,10 +2234,10 @@ function NextHub:CreateWindow(props)
 			Create("UIListLayout", { Parent = outer, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 0) })
 			Create("UIPadding", {
 				Parent = outer,
-				PaddingTop = UDim.new(0, 6),
-				PaddingBottom = UDim.new(0, 6),
-				PaddingLeft = UDim.new(0, 6),
-				PaddingRight = UDim.new(0, 6),
+				PaddingTop = UDim.new(0, 3),
+				PaddingBottom = UDim.new(0, 3),
+				PaddingLeft = UDim.new(0, 0),
+				PaddingRight = UDim.new(0, 0),
 			})
 
 			local sectionHeader = Create("Frame", {
@@ -1902,8 +2316,8 @@ function NextHub:CreateWindow(props)
 				Parent = sectionGroup,
 				PaddingTop = UDim.new(0, 6), 
 				PaddingBottom = UDim.new(0, 6),
-				PaddingLeft = UDim.new(0, 0), 
-				PaddingRight = UDim.new(0, 0),
+				PaddingLeft = UDim.new(0, 1), 
+				PaddingRight = UDim.new(0, 1),
 			})
 
 			CurrentGroup = sectionGroup
@@ -1986,12 +2400,11 @@ function NextHub:CreateWindow(props)
 					Size = UDim2.new(1, 0, 0, 20), 
 					FontFace = GetFont(Enum.FontWeight.SemiBold),
 					Text = props.Title, 
-					TextColor3 = Style.Primary, 
+					TextColor3 = Style.Text, 
 					TextSize = DS.FontTitle,
 					TextXAlignment = Enum.TextXAlignment.Left, 
 					TextYAlignment = Enum.TextYAlignment.Top,
 				})
-				RegisterTheme({ object = titleLbl, prop = "TextColor3", key = "Primary" })
 			end
 
 			local bodyLbl = Create("TextLabel", {
@@ -2090,12 +2503,11 @@ function NextHub:CreateWindow(props)
 				BackgroundTransparency = 1, 
 				FontFace = GetFont(Enum.FontWeight.SemiBold),
 				TextSize = DS.FontTitle, 
-				TextColor3 = Style.Primary,
+				TextColor3 = Style.Text,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextYAlignment = props.Desc and Enum.TextYAlignment.Top or Enum.TextYAlignment.Center,
 				Parent = btnFrame,
 			})
-			RegisterTheme({ object = titleLbl, prop = "TextColor3", key = "Primary" })
 
 			local descLbl = nil
 			if props.Desc then
@@ -2191,12 +2603,11 @@ function NextHub:CreateWindow(props)
 					props.Desc and 0 or 1, 0),
 				FontFace = GetFont(Enum.FontWeight.SemiBold), 
 				Text = props.Title or "Input",
-				TextColor3 = Style.Primary, 
+				TextColor3 = Style.Text, 
 				TextSize = DS.FontTitle,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextYAlignment = props.Desc and Enum.TextYAlignment.Top or Enum.TextYAlignment.Center,
 			})
-			RegisterTheme({ object = titleLbl, prop = "TextColor3", key = "Primary" })
 
 			if props.Desc then
 				local desc = Create("TextLabel", {
@@ -2344,15 +2755,16 @@ function NextHub:CreateWindow(props)
 			local titleLbl = Create("TextLabel", {
 				Parent = sliderFrame, 
 				BackgroundTransparency = 1,
-				Position = UDim2.new(0, 12, 0, 6), 
-				Size = UDim2.new(1, -24, 0, 20),
+				Position = UDim2.new(0, DS.Padding, 0, 6), 
+				Size = UDim2.new(1, -(DS.Padding * 2 + 54), 0, 20),
 				FontFace = GetFont(Enum.FontWeight.SemiBold), 
 				Text = props.Title or "Slider",
-				TextColor3 = Style.Primary, 
+				TextColor3 = Style.Text, 
 				TextSize = DS.FontTitle,
 				TextXAlignment = Enum.TextXAlignment.Left,
+				TextYAlignment = Enum.TextYAlignment.Top,
+				TextTruncate = Enum.TextTruncate.AtEnd,
 			})
-			RegisterTheme({ object = titleLbl, prop = "TextColor3", key = "Primary" })
 
 			local valueLbl = Create("TextLabel", {
 				Parent = sliderFrame, 
@@ -2402,13 +2814,17 @@ function NextHub:CreateWindow(props)
 			local inputBtn = Create("TextButton", {
 				Parent = sliderBg, 
 				BackgroundTransparency = 1,
-				Size = UDim2.new(1, 0, 1, 0), 
+				AnchorPoint = Vector2.new(0, 0.5),
+				Position = UDim2.new(0, 0, 0.5, 0),
+				Size = UDim2.new(1, 0, 0, 26),
 				Text = "", ZIndex = 3,
+				Active = true,
 			})
 
 			local dragging = false
 			local sliderCallback = props.Callback or function() end
 			local SliderObj = { Value = default }
+			local knobTween = TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 			local function updateSlider(value, silent)
 				value = math.clamp(value, min, max)
@@ -2428,7 +2844,7 @@ function NextHub:CreateWindow(props)
 			inputBtn.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					dragging = true
-					TweenService:Create(knob, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), { Size = UDim2.new(0, 18, 0, 18) }):Play()
+					TweenService:Create(knob, knobTween, { Size = UDim2.new(0, 18, 0, 18) }):Play()
 					local p = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
 					updateSlider(min + (max - min) * p)
 				end
@@ -2437,7 +2853,19 @@ function NextHub:CreateWindow(props)
 			inputBtn.InputEnded:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					dragging = false
-					TweenService:Create(knob, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), { Size = UDim2.new(0, 14, 0, 14) }):Play()
+					TweenService:Create(knob, knobTween, { Size = UDim2.new(0, 14, 0, 14) }):Play()
+				end
+			end)
+
+			inputBtn.MouseEnter:Connect(function()
+				if not dragging then
+					TweenService:Create(knob, knobTween, { Size = UDim2.new(0, 16, 0, 16) }):Play()
+				end
+			end)
+
+			inputBtn.MouseLeave:Connect(function()
+				if not dragging then
+					TweenService:Create(knob, knobTween, { Size = UDim2.new(0, 14, 0, 14) }):Play()
 				end
 			end)
 
@@ -2518,12 +2946,11 @@ function NextHub:CreateWindow(props)
 				Size = UDim2.new(1, -60, props.Desc and 0 or 1, 0),
 				FontFace = GetFont(Enum.FontWeight.SemiBold), 
 				Text = props.Title or "Toggle",
-				TextColor3 = Style.Primary, 
+				TextColor3 = Style.Text, 
 				TextSize = DS.FontTitle,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextYAlignment = props.Desc and Enum.TextYAlignment.Top or Enum.TextYAlignment.Center,
 			})
-			RegisterTheme({ object = titleLbl, prop = "TextColor3", key = "Primary" })
 
 			local descLbl = nil
 			if props.Desc then
@@ -2652,8 +3079,9 @@ function NextHub:CreateWindow(props)
 
 			local cfgKey = configKey
 			local ddName = props.Name or props.Title or "Dropdown"
-			local items = props.Options or {}
-			local defaultVal = props.Default or items[1]
+			local getOptions = (typeof(props.Options) == "function") and props.Options or nil
+			local items = getOptions and getOptions() or props.Options or {}
+			local defaultVal = props.Default
 			local ddCallback = props.Callback or function() end
 			local searchEnabled = props.SearchEnabled or false
 			local isMulti = props.Multi or false
@@ -2704,13 +3132,12 @@ function NextHub:CreateWindow(props)
 				Size = UDim2.new(1, -40, props.Desc and 0 or 1, 0),
 				FontFace = GetFont(Enum.FontWeight.SemiBold), 
 				Text = ddName,
-				TextColor3 = Style.Primary, 
+				TextColor3 = Style.Text, 
 				TextSize = DS.FontTitle,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextYAlignment = props.Desc and Enum.TextYAlignment.Top or Enum.TextYAlignment.Center,
 				ZIndex = 2,
 			})
-			RegisterTheme({ object = titleLbl, prop = "TextColor3", key = "Primary" })
 
 			if props.Desc then
 				local desc = Create("TextLabel", {
@@ -2777,6 +3204,10 @@ function NextHub:CreateWindow(props)
 
 			if isMulti then
 				clickBtn.Activated:Connect(function()
+					if getOptions then
+						items = getOptions() or items
+						DropdownObj.Items = items
+					end
 					Window:OpenRightDropdownMulti(ddName, items, multiSel, function(sel)
 						table.clear(multiSel)
 						for _, v in pairs(sel) do 
@@ -2812,6 +3243,10 @@ function NextHub:CreateWindow(props)
 				function DropdownObj:GetValue() return multiSel end
 			else
 				clickBtn.Activated:Connect(function()
+					if getOptions then
+						items = getOptions() or items
+						DropdownObj.Items = items
+					end
 					Window:OpenRightDropdown(ddName, items, singleSel, function(value)
 						if value and value[1] then
 							singleSel = value[1]
@@ -2824,12 +3259,19 @@ function NextHub:CreateWindow(props)
 				end)
 
 				function DropdownObj:Set(value)
+					if value == nil then value = {} end
 					if typeof(value) ~= "table" then return end
-					if value[1] then
+
+					if value[1] and table.find(items, value[1]) then
 						singleSel = value[1]
 						curValLbl.Text = singleSel
 						if cfgKey then ConfigData[cfgKey] = value end
 						ddCallback(value)
+					else
+						singleSel = nil
+						curValLbl.Text = "Select..."
+						if cfgKey then ConfigData[cfgKey] = {} end
+						ddCallback({})
 					end
 				end
 
@@ -2890,9 +3332,15 @@ function NextHub:CreateWindow(props)
 		local loadSec = tab:AddSection({ Title = "Load Configuration" })
 
 		local configList = self:ListConfigs()
+
+		local function CurrentConfigs()
+			local list = self:ListConfigs()
+			return #list > 0 and list or { "empty" }
+		end
+
 		local configDrop = tab:AddDropdown({
 			Title = "Saved Configs",
-			Options = #configList > 0 and configList or { "empty" },
+			Options = CurrentConfigs,
 			Default = configList[1],
 		})
 
@@ -2929,8 +3377,6 @@ function NextHub:CreateWindow(props)
 					return
 				end
 				self:DeleteConfig(sel)
-				local newList = self:ListConfigs()
-				configDrop:Refresh(#newList > 0 and newList or { "empty" })
 			end,
 		})
 
