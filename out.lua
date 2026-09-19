@@ -13144,6 +13144,30 @@ local function main()
 		window:Show()
 	end
 
+	local function base64Encode(data)
+		local encoder = base64_encode or (typeof(crypt) == "table" and crypt.base64encode)
+		if not encoder then
+			encoder = function(d)
+				local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+				return ((d:gsub(".", function(x)
+					local r, byte = "", x:byte()
+					for i = 8, 1, -1 do
+						r = r .. (byte % 2^i - byte % 2^(i-1) > 0 and "1" or "0")
+					end
+					return r
+				end) .. "0000"):gsub("%d%d%d?%d?%d?%d?", function(x)
+					if #x < 6 then return "" end
+					local c = 0
+					for i = 1, 6 do
+						c = c + (x:sub(i, i) == "1" and 2^(6-i) or 0)
+					end
+					return b:sub(c+1, c+1)
+				end) .. ({ "", "==", "=" })[#d % 3 + 1])
+			end
+		end
+		return encoder(data)
+	end
+
 	local function buildBytecodeText(scr)
 		local oldtick = tick()
 		local s,bytecode = pcall(env.getscriptbytecode, scr)
@@ -13166,7 +13190,7 @@ local function main()
 				text = text .. "-- Took "..tostring(math.floor((tick() - oldtick) * 100) / 100).."s to load bytecode.\n"
 				text = text .. "-- Executor: "..executorName.." ("..executorVersion..")\n\n"
 			end
-			text = text .. bytecode
+			text = text .. base64Encode(bytecode)
 		end
 
 		return text
