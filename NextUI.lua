@@ -1313,7 +1313,12 @@ function NextHub:CreateWindow(props)
 		ZIndex = 50,
 	})
 	Create("UIListLayout", { Parent = ButtonsHolder, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 5) })
-	Create("UIPadding", { Parent = ButtonsHolder, PaddingLeft = UDim.new(0, 7), PaddingRight = UDim.new(0, 7) })
+	Create("UIPadding", { 
+		Parent = ButtonsHolder, 
+		PaddingLeft = UDim.new(0, 7), 
+		PaddingRight = UDim.new(0, 7),
+		PaddingTop = UDim.new(0, 2)
+	})
 
 	local ContentContainer = Create("Frame", {
 		Name = "ContentContainer", 
