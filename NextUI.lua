@@ -1315,39 +1315,6 @@ function NextHub:CreateWindow(props)
 	Create("UIListLayout", { Parent = ButtonsHolder, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 5) })
 	Create("UIPadding", { Parent = ButtonsHolder, PaddingLeft = UDim.new(0, 7), PaddingRight = UDim.new(0, 7) })
 
-	local IndicatorLayer = Create("Frame", {
-		Name = "IndicatorLayer",
-		Parent = Sidebar,
-		BackgroundTransparency = 1,
-		Position = UDim2.new(0, 0, 0, 0),
-		Size = UDim2.new(1, 0, 1, 0),
-		ZIndex = 55,
-		Active = false,
-		ClipsDescendants = true,
-	})
-
-	local tabIndicator = Create("Frame", {
-		Name = "TabIndicator",
-		Parent = IndicatorLayer,
-		BackgroundColor3 = Style.Primary,
-		BackgroundTransparency = 0.75,
-		Size = UDim2.new(1, -14, 0, DS.TabBtnH),
-		Position = UDim2.new(0, 7, 0, 2),
-		ZIndex = 60,
-		Active = false,
-		Visible = false,
-	})
-	Create("UICorner", { CornerRadius = UDim.new(0, 5), Parent = tabIndicator })
-	local indStroke = Create("UIStroke", {
-		Color = Style.Primary,
-		Thickness = 1.2,
-		Transparency = 0,
-		ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
-		Parent = tabIndicator,
-	})
-	RegisterTheme({ object = indStroke, prop = "Color", key = "Primary" })
-	RegisterTheme({ object = tabIndicator, prop = "BackgroundColor3", key = "Primary" })
-
 	local ContentContainer = Create("Frame", {
 		Name = "ContentContainer", 
 		Parent = MainFrame,
@@ -2098,6 +2065,17 @@ function NextHub:CreateWindow(props)
 		self.TabButtons[index] = tabBtn
 		Create("UICorner", { CornerRadius = UDim.new(0, 5), Parent = tabBtn })
 
+		local tabStroke = Create("UIStroke", {
+			Name = "ActiveStroke",
+			Color = Style.Primary,
+			Thickness = 1.2,
+			Transparency = 1,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+			Parent = tabBtn,
+		})
+		RegisterTheme({ object = tabStroke, prop = "Color", key = "Primary" })
+		RegisterTheme({ object = tabBtn, prop = "BackgroundColor3", key = "Primary" })
+
 		local tabIconSz = math.floor(DS.TabBtnH * 0.5)
 
 		if tabIcon then
@@ -2162,6 +2140,8 @@ function NextHub:CreateWindow(props)
 			})
 		end
 
+		local TabStateTween = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
 		local function ActivateTab()
 			Window.__tabChanged:Fire()
 			Window.__activeTabIndex = index
@@ -2170,24 +2150,18 @@ function NextHub:CreateWindow(props)
 				c.Visible = (i == index)
 			end
 
-			local btn = self.TabButtons[index]
-			if btn and IndicatorLayer and tabIndicator then
-				local scale = WindowScale.Scale
-				local relX = (btn.AbsolutePosition.X - IndicatorLayer.AbsolutePosition.X) / scale
-				local relY = (btn.AbsolutePosition.Y - IndicatorLayer.AbsolutePosition.Y) / scale
-				local relW = btn.AbsoluteSize.X / scale
-				local relH = btn.AbsoluteSize.Y / scale
+			for i, btn in ipairs(self.TabButtons) do
+				local isActive = (i == index)
+				local stroke = btn:FindFirstChild("ActiveStroke")
 
-				tabIndicator.Visible = true
-				if Window.__indicatorInitialized then
-					TweenService:Create(tabIndicator, TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-						Position = UDim2.fromOffset(relX, relY + 2),
-						Size = UDim2.fromOffset(relW, relH),
+				TweenService:Create(btn, TabStateTween, {
+					BackgroundTransparency = isActive and 0.75 or 1,
+				}):Play()
+
+				if stroke then
+					TweenService:Create(stroke, TabStateTween, {
+						Transparency = isActive and 0 or 1,
 					}):Play()
-				else
-					tabIndicator.Position = UDim2.fromOffset(relX, relY + 2)
-					tabIndicator.Size = UDim2.fromOffset(relW, relH)
-					Window.__indicatorInitialized = true
 				end
 			end
 		end
@@ -3308,7 +3282,7 @@ function NextHub:CreateWindow(props)
 	-- CONFIG TAB
 	-- ==========================================
 	function Window:AddConfigTab()
-		local tab = self:AddTab({ Title = "Config" })
+		local tab = self:AddTab({ Title = "Config", Icon = "settings" })
 
 		local saveSec = tab:AddSection({ Title = "Save Configuration" })
 
